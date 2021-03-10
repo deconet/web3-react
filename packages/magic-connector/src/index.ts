@@ -2,13 +2,17 @@ import { ConnectorUpdate } from '@web3-react/types'
 import { AbstractConnector } from '@web3-react/abstract-connector'
 import invariant from 'tiny-invariant'
 
-type NetworkName = 'mainnet' | 'ropsten' | 'rinkeby' | 'kovan'
+//type NetworkName = 'mainnet' | 'ropsten' | 'rinkeby' | 'kovan'
 
-const chainIdToNetwork: { [network: number]: NetworkName } = {
+const chainIdToNetwork: { [network: number]: any } = {
   1: 'mainnet',
   3: 'ropsten',
   4: 'rinkeby',
-  42: 'kovan'
+  42: 'kovan',
+  137: {
+    rpcUrl: 'https://rpc-mainnet.maticvigil.com/v1/b7ee9d5e941cf79d44a70a09f9f4802abba91745',
+    chainId: 137
+  }
 }
 
 interface MagicConnectorArguments {
