@@ -19,6 +19,7 @@ interface MagicConnectorArguments {
   apiKey: string
   chainId: number
   email: string
+  redirectURI?: string
 }
 
 export class UserRejectedRequestError extends Error {
@@ -57,7 +58,7 @@ export class MagicConnector extends AbstractConnector {
   private readonly apiKey: string
   private readonly chainId: number
   private readonly email: string
-  private readonly redirectURI: string
+  private readonly redirectURI?: string
 
   public magic: any
 
@@ -89,11 +90,11 @@ export class MagicConnector extends AbstractConnector {
 
     if (!isLoggedIn) {
       try {
-        const loginParams = {
+        const loginParams: { [propName: string]: string } = {
           email: this.email
         }
         if (this.redirectURI){
-          loginParams.redirectURI = redirectURI
+          loginParams.redirectURI = this.redirectURI
         }
         await this.magic.auth.loginWithMagicLink(loginParams)
       } catch (err) {
