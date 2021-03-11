@@ -57,10 +57,11 @@ export class MagicConnector extends AbstractConnector {
   private readonly apiKey: string
   private readonly chainId: number
   private readonly email: string
+  private readonly redirectURI: string
 
   public magic: any
 
-  constructor({ apiKey, chainId, email }: MagicConnectorArguments) {
+  constructor({ apiKey, chainId, email, redirectURI }: MagicConnectorArguments) {
     invariant(Object.keys(chainIdToNetwork).includes(chainId.toString()), `Unsupported chainId ${chainId}`)
     invariant(email && email.includes('@'), `Invalid email: ${email}`)
     super({ supportedChainIds: [chainId] })
@@ -68,6 +69,7 @@ export class MagicConnector extends AbstractConnector {
     this.apiKey = apiKey
     this.chainId = chainId
     this.email = email
+    this.redirectURI = redirectURI
   }
 
   public async activate(): Promise<ConnectorUpdate> {
@@ -87,7 +89,13 @@ export class MagicConnector extends AbstractConnector {
 
     if (!isLoggedIn) {
       try {
-        await this.magic.auth.loginWithMagicLink({ email: this.email })
+        const loginParams = {
+          email: this.email
+        }
+        if (this.redirectURI){
+          loginParams.redirectURI = redirectURI
+        }
+        await this.magic.auth.loginWithMagicLink(loginParams)
       } catch (err) {
         if (!(err instanceof RPCError)) {
           throw err
